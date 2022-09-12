@@ -44,3 +44,11 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## Upcoming features
+- Automatic prune of old data
+- Option to manually add registration with from/to timestamps
+- Option to edit existing registrations
+- Option to remove existing registrations
+- Option to show registrations plus totals for previous dates
