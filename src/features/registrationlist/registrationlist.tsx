@@ -2,17 +2,24 @@ import { Box, Typography } from '@mui/material';
 
 import { useAppSelector } from '../../app/hooks';
 
-import { selectCurrent, selectRegistrations } from '../../slices/timeSlice';
+import { selectCurrent, selectRegistrations, TimeRegistration } from '../../slices/timeSlice';
 import { Registration } from '../registration/registration';
 
 export function RegistrationList() {
 
 	const date = new Date().toLocaleDateString();
 	const currentRegistration = useAppSelector(selectCurrent);
-	let registrations = [...useAppSelector(selectRegistrations)[date]];
+	const allRegistrations = useAppSelector(selectRegistrations);
+	let registrations: TimeRegistration[] = [];
+	if (allRegistrations) {
+		const datedRegistrations = allRegistrations[date];
+		if (datedRegistrations)
+			registrations = [...datedRegistrations];
+	}
 	if (currentRegistration && currentRegistration.end) {
 		registrations.push(currentRegistration);
 	}
+
 	return (
 		<Box>
 			<Typography gutterBottom variant="h5" component="div">
