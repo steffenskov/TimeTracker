@@ -18,8 +18,12 @@ export function Project(props: { name: string }) {
 	const registrations = useAppSelector(selectRegistrations)[new Date().toLocaleDateString()];
 
 	function deleteProjectName() {
-		if (window.confirm(`Are you sure you want to delete "${props.name}" ?`))
+		if (window.confirm(`Are you sure you want to delete "${props.name}" ?`)) {
+			if (currentRegistration?.project === props.name) {
+				dispatch(stopRegistration());
+			}
 			dispatch(deleteProject(props.name));
+		}
 	}
 
 	function startProjectName() {

@@ -49,7 +49,7 @@ export function ProjectList() {
 				<CardActions>
 					<form onSubmit={addProjectName}>
 						<TextField size="small" variant="outlined" required placeholder="New project name" value={projectName} onChange={(e) => setProjectName(e.currentTarget.value)} />
-						<Button type="submit" variant="contained">Add project</Button>
+						<Button type="submit" variant="contained">+</Button>
 					</form>
 				</CardActions>
 			</Card>
