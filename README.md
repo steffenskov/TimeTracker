@@ -45,10 +45,9 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-
 ## Upcoming features
+
 - Automatic prune of old data
 - Option to manually add registration with from/to timestamps
 - Option to edit existing registrations
-- Option to remove existing registrations
 - Option to show registrations plus totals for previous dates
