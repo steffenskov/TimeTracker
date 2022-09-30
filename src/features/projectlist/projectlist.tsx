@@ -14,6 +14,7 @@ import { addProject, selectProjects } from "../../slices/projectsSlice";
 
 import { updateCurrentEnd } from "../../slices/timeSlice";
 import { Project } from "../project/project";
+import { Summary } from "../summary/summary";
 
 export function ProjectList() {
   const projects = useAppSelector(selectProjects);
@@ -52,6 +53,7 @@ export function ProjectList() {
           {projects.map((project) => (
             <Project key={project} name={project} />
           ))}
+          <Summary />
         </CardContent>
         <CardActions>
           <form onSubmit={addProjectName}>
