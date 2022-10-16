@@ -49,5 +49,4 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 - Automatic prune of old data
 - Option to manually add registration with from/to timestamps
-- Option to edit existing registrations
 - Option to show registrations plus totals for previous dates

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
 export interface TimeRegistration {
+  id: number;
   project: string;
   date: string;
   start: number;
@@ -40,7 +41,19 @@ export const TimeSlice = createSlice({
         state.registrations[state.current.date].push(state.current);
       }
       const now = new Date();
+      const date = now.toLocaleDateString();
+      const existingRegistrations = state.registrations[date];
+      let newId = 1;
+      if (existingRegistrations)
+      {
+        for (let registration of existingRegistrations)
+        {
+          if (registration.id > newId)
+            newId =registration.id+1;
+        }
+      }
       state.current = {
+        id: newId,
         date: now.toLocaleDateString(),
         project: name.payload,
         start: now.getTime(),
@@ -57,6 +70,17 @@ export const TimeSlice = createSlice({
       state.current = undefined;
       localStorage.setItem("time", JSON.stringify(state));
     },
+    updateRegistration: (state, payload: PayloadAction<TimeRegistration>) => {
+      const registration = payload.payload;
+      const registrationsForDate = state.registrations[registration.date];
+      const registrationToUpdate =registrationsForDate.find(item => item.id === registration.id);
+      if (!registrationToUpdate){
+        return;
+      }
+      registrationToUpdate.start = registration.start;
+      registrationToUpdate.end = registration.end;
+      localStorage.setItem("time", JSON.stringify(state));
+    },
     updateCurrentEnd: (state) => {
       if (state.current) {
         state.current.end = new Date().getTime();
@@ -68,9 +92,7 @@ export const TimeSlice = createSlice({
     ) => {
       const payload = registration.payload;
       if (
-        state.current &&
-        state.current.start === payload.start &&
-        state.current.project === payload.project
+        state.current && state.current.id === payload.id
       ) {
         // current is the one being deleted, simply remove it
         state.current = undefined;
@@ -78,8 +100,7 @@ export const TimeSlice = createSlice({
         const dateRegistrations = state.registrations[payload.date];
         const item = dateRegistrations.find(
           (registration) =>
-            payload.project === registration.project &&
-            payload.start === registration.start
+              payload.id === registration.id
         );
         if (item) {
           const index = dateRegistrations.indexOf(item);
@@ -98,6 +119,7 @@ export const {
   stopRegistration,
   updateCurrentEnd,
   deleteRegistration,
+    updateRegistration
 } = TimeSlice.actions;
 
 export const selectCurrent = (state: RootState) => state.time.current;
