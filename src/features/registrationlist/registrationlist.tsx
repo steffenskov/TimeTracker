@@ -1,6 +1,9 @@
 import { Box, Typography } from "@mui/material";
 
-import { useAppSelector } from "../../app/hooks";
+import { useEffect } from "react";
+
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { pruneOldRegistrations } from "../../slices/timeSlice";
 
 import {
   selectCurrent,
@@ -8,9 +11,23 @@ import {
   TimeRegistration,
 } from "../../slices/timeSlice";
 import { Registration } from "../registration/registration";
+import dateFormatter from "../../utilities/dateFormatter";
 
 export function RegistrationList() {
-  const date = new Date().toLocaleDateString();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dispatch(pruneOldRegistrations());
+    }, 1000*60*60);
+
+    // clear on unmount
+    return () => {
+      clearInterval(interval);
+    };
+  }, []); // [] == run once on mount
+
+  const date = dateFormatter.formatDate(new Date());
   const currentRegistration = useAppSelector(selectCurrent);
   const allRegistrations = useAppSelector(selectRegistrations);
   let registrations: TimeRegistration[] = [];

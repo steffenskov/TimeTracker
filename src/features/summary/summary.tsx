@@ -5,11 +5,12 @@ import styles from "../project/project.module.css";
 
 import { selectCurrent, selectRegistrations } from "../../slices/timeSlice";
 import timeFormatter from "../../utilities/timeFormatter";
+import dateFormatter from "../../utilities/dateFormatter";
 
 export function Summary() {
   const currentRegistration = useAppSelector(selectCurrent);
   const registrations =
-    useAppSelector(selectRegistrations)[new Date().toLocaleDateString()];
+    useAppSelector(selectRegistrations)[dateFormatter.formatDate(new Date())];
 
   function getLabel(): string {
     let timeSpent = 0;

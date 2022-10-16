@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
+import dateFormatter from "../utilities/dateFormatter";
 
 export interface TimeRegistration {
   id: number;
@@ -41,20 +42,17 @@ export const TimeSlice = createSlice({
         state.registrations[state.current.date].push(state.current);
       }
       const now = new Date();
-      const date = now.toLocaleDateString();
+      const date = dateFormatter.formatDate(now);
       const existingRegistrations = state.registrations[date];
       let newId = 1;
-      if (existingRegistrations)
-      {
-        for (let registration of existingRegistrations)
-        {
-          if (registration.id > newId)
-            newId =registration.id+1;
+      if (existingRegistrations) {
+        for (let registration of existingRegistrations) {
+          if (registration.id > newId) newId = registration.id + 1;
         }
       }
       state.current = {
         id: newId,
-        date: now.toLocaleDateString(),
+        date: date,
         project: name.payload,
         start: now.getTime(),
       };
@@ -73,8 +71,10 @@ export const TimeSlice = createSlice({
     updateRegistration: (state, payload: PayloadAction<TimeRegistration>) => {
       const registration = payload.payload;
       const registrationsForDate = state.registrations[registration.date];
-      const registrationToUpdate =registrationsForDate.find(item => item.id === registration.id);
-      if (!registrationToUpdate){
+      const registrationToUpdate = registrationsForDate.find(
+        (item) => item.id === registration.id
+      );
+      if (!registrationToUpdate) {
         return;
       }
       registrationToUpdate.start = registration.start;
@@ -86,21 +86,36 @@ export const TimeSlice = createSlice({
         state.current.end = new Date().getTime();
       }
     },
+    pruneOldRegistrations: (state) => {
+      const now = new Date();
+      const datesToPrune = [];
+      for (let date in state.registrations) {
+        console.log(date);
+        const diffMs = now.getTime() - new Date(date).getTime();
+        const diffDays = diffMs / 1000 / 60 / 60 / 24;
+        if (diffDays > 31)
+        {
+          datesToPrune.push(date);
+        }
+      }
+      for (let date of datesToPrune)
+      {
+        delete state.registrations[date];
+      }
+      localStorage.setItem("time", JSON.stringify(state));
+    },
     deleteRegistration: (
       state,
       registration: PayloadAction<TimeRegistration>
     ) => {
       const payload = registration.payload;
-      if (
-        state.current && state.current.id === payload.id
-      ) {
+      if (state.current && state.current.id === payload.id) {
         // current is the one being deleted, simply remove it
         state.current = undefined;
       } else {
         const dateRegistrations = state.registrations[payload.date];
         const item = dateRegistrations.find(
-          (registration) =>
-              payload.id === registration.id
+          (registration) => payload.id === registration.id
         );
         if (item) {
           const index = dateRegistrations.indexOf(item);
@@ -119,7 +134,8 @@ export const {
   stopRegistration,
   updateCurrentEnd,
   deleteRegistration,
-    updateRegistration
+  updateRegistration,
+  pruneOldRegistrations,
 } = TimeSlice.actions;
 
 export const selectCurrent = (state: RootState) => state.time.current;

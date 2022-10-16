@@ -14,12 +14,13 @@ import {
 import { Chip } from "@mui/material";
 import styles from "./project.module.css";
 import timeFormatter from "../../utilities/timeFormatter";
+import dateFormatter from "../../utilities/dateFormatter";
 export function Project(props: { name: string }) {
   const dispatch = useAppDispatch();
   const currentRegistration = useAppSelector(selectCurrent);
   const isCurrent = currentRegistration?.project === props.name;
   const registrations =
-    useAppSelector(selectRegistrations)[new Date().toLocaleDateString()];
+    useAppSelector(selectRegistrations)[dateFormatter.formatDate(new Date())];
 
   function deleteProjectName() {
     if (window.confirm(`Are you sure you want to delete "${props.name}" ?`)) {
