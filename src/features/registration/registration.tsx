@@ -1,5 +1,9 @@
-import { useAppDispatch } from "../../app/hooks";
-import { deleteRegistration, updateRegistration } from "../../slices/timeSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  deleteRegistration,
+  updateRegistration,
+  selectCurrent,
+} from "../../slices/timeSlice";
 
 import {
   Button,
@@ -24,12 +28,18 @@ import { FormEvent, useState } from "react";
 export function Registration(props: { registration: TimeRegistration }) {
   const dispatch = useAppDispatch();
 
+  const currentRegistration = useAppSelector(selectCurrent);
+  const isCurrent = props.registration.id === currentRegistration?.id;
+
   const [editMode, setEditMode] = useState(false);
   const [start, setStart] = useState(
     timeFormatter.formatTimeFromDate(new Date(props.registration.start))
   );
   const [end, setEnd] = useState(
     timeFormatter.formatTimeFromDate(new Date(props.registration.end!))
+  );
+  const dynamicEnd = timeFormatter.formatTimeFromDate(
+    new Date(props.registration.end!)
   );
 
   const time = timeFormatter.formatTime(
@@ -121,7 +131,7 @@ export function Registration(props: { registration: TimeRegistration }) {
     </Typography>
   ) : (
     <Typography gutterBottom variant="body1" component="div">
-      {start} - {end}
+      {start} - {dynamicEnd}
     </Typography>
   );
 
@@ -134,6 +144,8 @@ export function Registration(props: { registration: TimeRegistration }) {
         <CancelIcon />
       </IconButton>
     </CardActions>
+  ) : isCurrent ? (
+    <CardActions></CardActions>
   ) : (
     <CardActions>
       <IconButton onClick={editRegistrationHandler}>

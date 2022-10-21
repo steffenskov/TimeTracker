@@ -3,12 +3,12 @@ import { Box, Typography } from "@mui/material";
 import { useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { pruneOldRegistrations } from "../../slices/timeSlice";
 
 import {
   selectCurrent,
   selectRegistrations,
   TimeRegistration,
+  pruneOldRegistrations,
 } from "../../slices/timeSlice";
 import { Registration } from "../registration/registration";
 import dateFormatter from "../../utilities/dateFormatter";
@@ -19,7 +19,7 @@ export function RegistrationList() {
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(pruneOldRegistrations());
-    }, 1000*60*60);
+    }, 1000 * 60 * 60);
 
     // clear on unmount
     return () => {

@@ -47,7 +47,7 @@ export const TimeSlice = createSlice({
       let newId = 1;
       if (existingRegistrations) {
         for (let registration of existingRegistrations) {
-          if (registration.id > newId) newId = registration.id + 1;
+          if (registration.id >= newId) newId = registration.id + 1;
         }
       }
       state.current = {
@@ -90,16 +90,13 @@ export const TimeSlice = createSlice({
       const now = new Date();
       const datesToPrune = [];
       for (let date in state.registrations) {
-        console.log(date);
         const diffMs = now.getTime() - new Date(date).getTime();
         const diffDays = diffMs / 1000 / 60 / 60 / 24;
-        if (diffDays > 31)
-        {
+        if (diffDays > 31) {
           datesToPrune.push(date);
         }
       }
-      for (let date of datesToPrune)
-      {
+      for (let date of datesToPrune) {
         delete state.registrations[date];
       }
       localStorage.setItem("time", JSON.stringify(state));
